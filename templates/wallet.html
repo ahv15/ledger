@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"> 
+
+    <title>Wallet</title>
+</head>
+
+<body style=" background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(191,245,255,1) 35%, rgba(188,215,217,1) 100%);">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 mb-3">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Ledger</a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="nav nav-pills">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="/home">Hi {{ request.user }}</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="/wallet"> Wallet </a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="/mine"> Mine </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <br>
+    <div class="mx-auto" style="width: 500px" ;>
+        <form action="/wallet" method="post" class="form-horizontal">
+            {% csrf_token%}
+            <div class="col-xs-8 col-xs-offset-4">
+                <h2 style="text-align:center; font-family: 'Poppins', sans-serif; font-size: 40px; font-weight: 600 ;">Wallet</h2>
+            </div>
+
+            <div class="form-group">
+                <label for="miners">Choose a miner to send the transaction to:</label>
+                <select name = "miner" class="form-select" aria-label="list of miners">
+                    {% for miner in miners %}
+                        <option value= {{ miner }}>{{ miner }}</option>
+                    {% endfor %}
+                  </select>
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="reciever"> Reciever </label>
+                <input type="text" class="form-control" name="reciever" id="reciever" placeholder="Enter Recievers Name">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="amount"> Amount: </label>
+                <input type="text" class="form-control" name="amount" id="amount" placeholder="Enter Amount">
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary"> Submit Transaction </button>
+            <div class="form-group">
+                {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{message}}
+                </div>
+                {% endfor %}
+            </div>
+        </form>
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</body>
+
+</html>
