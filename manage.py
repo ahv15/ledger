@@ -1,5 +1,11 @@
 #!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
+"""
+Django's command-line utility for administrative tasks.
+
+This script is the main entry point for running Django management commands.
+It's automatically created by Django when you start a new project.
+"""
+
 import os
 import sys
 
