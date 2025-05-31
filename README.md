@@ -96,11 +96,6 @@ pytest
 
 The tests cover mempool handling, transaction validation, block creation, and blockchain consistency checks.
 
-## Author
-
-**Harshit**  
-Email: 52852877+ahv15@users.noreply.github.com  
-GitHub: [https://github.com/ahv15/ledger](https://github.com/ahv15/ledger)
 
 ## Scope & Exclusions
 
