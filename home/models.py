@@ -2,23 +2,25 @@ from django.db import models
 from django.utils import timezone
 
 
-class Memepool(models.Model):
+class Mempool(models.Model):
+    """Represents a mempool for pending transactions."""
     user_name = models.CharField(max_length=200)
-    txcount = models.IntegerField(default=0)
+    transaction_count = models.IntegerField(default=0)
 
     def __str__(self):
-        return str('Memepool')
+        return str('Mempool')
 
 
 class Block(models.Model):
+    """Represents a block in the blockchain."""
     blockid = models.AutoField(primary_key=True)
-    txcount = models.IntegerField(default=0)
-    time_stamp = models.DateTimeField()
+    transaction_count = models.IntegerField(default=0)
+    transaction_timestamp = models.DateTimeField()
     previous = models.OneToOneField(
         'self', null=True, blank=True, related_name="next", on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
-        self.time_stamp = timezone.now()
+        self.transaction_timestamp = timezone.now()
         return super(Block, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -26,18 +28,19 @@ class Block(models.Model):
 
 
 class Transaction(models.Model):
+    """Represents a transaction in the ledger."""
     txid = models.AutoField(primary_key=True)
     sendAddr = models.CharField(max_length=200)
     receiveAddr = models.CharField(max_length=200)
     amount = models.IntegerField(default=0)
-    time_stamp = models.DateTimeField()
+    transaction_timestamp = models.DateTimeField()
     block = models.ForeignKey(
         Block, on_delete=models.CASCADE, blank=True, null=True)
-    memepool = models.ForeignKey(
-        Memepool, on_delete=models.CASCADE, blank=True, null=True)
+    mempool = models.ForeignKey(
+        Mempool, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        self.time_stamp = timezone.now()
+        self.transaction_timestamp = timezone.now()
         return super(Transaction, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -45,6 +48,7 @@ class Transaction(models.Model):
 
 
 class Blockchain(models.Model):
+    """Represents the main blockchain structure."""
     user = models.CharField(max_length=200)
     genesis = models.OneToOneField(
         Block, null=True, blank=True, related_name="init_chain", on_delete=models.CASCADE)
@@ -56,6 +60,7 @@ class Blockchain(models.Model):
 
 
 class Wallet(models.Model):
+    """Represents a user's wallet."""
     user = models.CharField(max_length=200)
 
     def __str__(self):
@@ -63,6 +68,7 @@ class Wallet(models.Model):
 
 
 class Miner(models.Model):
+    """Represents a miner in the network."""
     user = models.CharField(max_length=200)
 
     def __str__(self):
