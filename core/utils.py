@@ -14,16 +14,16 @@ from home.models import Block, Transaction, Mempool, Blockchain
 
 def create_pending_transaction(sender, receiver, amount, mempool):
     """
-    Creates a pending transaction in the mempool.
+    Creates a pending transaction in the mempool/pending queue.
     
     Args:
         sender: User sending the transaction
         receiver: User receiving the transaction  
         amount: Transaction amount
-        mempool: Mempool instance to add transaction to
+        mempool: Mempool instance to add pending transaction to
         
     Returns:
-        Transaction: Created transaction instance
+        Transaction: Created transaction instance with transaction_timestamp
     """
     transaction = Transaction(
         sendAddr=sender,
@@ -37,13 +37,13 @@ def create_pending_transaction(sender, receiver, amount, mempool):
 
 def validate_mining_request(post_data):
     """
-    Validates if mining request contains valid transaction selections.
+    Validates if mining request contains valid transaction selections for mempool processing.
     
     Args:
         post_data: POST data from mining request
         
     Returns:
-        bool: True if valid mining request, False otherwise
+        bool: True if valid mining request with transaction boxes, False otherwise
     """
     if len(post_data.keys()) <= 0:
         return False
@@ -59,7 +59,7 @@ def validate_mining_request(post_data):
 
 def create_or_get_blockchain(user):
     """
-    Creates a new blockchain for user or returns existing one.
+    Creates a new blockchain for user or returns existing one with proper transaction_timestamp.
     
     Args:
         user: User to create/get blockchain for
@@ -70,7 +70,7 @@ def create_or_get_blockchain(user):
     existing_chain = Blockchain.objects.filter(user=user)
     
     if len(existing_chain) == 0:
-        # Create genesis block
+        # Create genesis block with transaction_timestamp
         genesis_block = Block(previous=None)
         genesis_block.save()
         
@@ -88,16 +88,16 @@ def create_or_get_blockchain(user):
 
 def mine_transactions_to_block(blockchain, selected_transaction_ids):
     """
-    Mines selected transactions into a new block.
+    Mines selected pending transactions from mempool into a new block.
     
     Args:
         blockchain: Blockchain instance to add block to
-        selected_transaction_ids: List of transaction IDs to mine
+        selected_transaction_ids: List of transaction IDs to mine from mempool
         
     Returns:
-        Block: Newly created block containing transactions
+        Block: Newly created block containing transactions with transaction_timestamp
     """
-    # Create new block
+    # Create new block with transaction_timestamp
     latest_block = blockchain.latest
     new_block = Block(previous=latest_block)
     new_block.save()
@@ -106,7 +106,7 @@ def mine_transactions_to_block(blockchain, selected_transaction_ids):
     blockchain.latest = new_block
     blockchain.save()
     
-    # Move transactions from mempool to block
+    # Move pending transactions from mempool to block
     for tx_id in selected_transaction_ids:
         try:
             transaction = Transaction.objects.filter(txid=tx_id)[0]
@@ -121,7 +121,7 @@ def mine_transactions_to_block(blockchain, selected_transaction_ids):
 
 def build_blockchain_list(blockchain):
     """
-    Builds ordered list of blocks in blockchain with their transactions.
+    Builds ordered list of blocks in blockchain with their transactions and transaction_count.
     
     Args:
         blockchain: Blockchain instance to traverse
@@ -151,10 +151,10 @@ def build_blockchain_list(blockchain):
 
 def get_mempool_transactions(user):
     """
-    Retrieves all pending transactions for a user's mempool.
+    Retrieves all pending transactions for a user's mempool/pending queue.
     
     Args:
-        user: User to get mempool transactions for
+        user: User to get mempool pending transactions for
         
     Returns:
         QuerySet: Pending transactions in mempool
@@ -168,9 +168,9 @@ def get_mempool_transactions(user):
 
 def calculate_transaction_timestamp():
     """
-    Calculates current timestamp for transactions.
+    Calculates current transaction_timestamp for transactions.
     
     Returns:
-        datetime: Current timezone-aware timestamp
+        datetime: Current timezone-aware transaction_timestamp
     """
     return timezone.now()
